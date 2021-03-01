@@ -13,7 +13,10 @@ interface BookDao {
     fun getAllBooks(): Flow<List<Book>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun addBook(bookItem: Book)
+    suspend fun addBook(bookItem: Book)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addBooks(books: List<Book>)
 
     @Query("DELETE from book_table")
     fun deleteAllBooks()

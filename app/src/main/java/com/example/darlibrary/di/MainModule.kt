@@ -9,7 +9,8 @@ val mainModule = module {
 
     single {
         BookRepository(
-            bookDao = get()
+            bookDao = get(),
+            bookApi = get()
         )
     }
 
