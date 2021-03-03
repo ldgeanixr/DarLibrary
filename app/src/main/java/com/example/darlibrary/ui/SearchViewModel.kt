@@ -12,16 +12,18 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
-class HomeViewModel(
+class SearchViewModel(
     private val bookRepository: BookRepository
 ) : ViewModel() {
 
     private val _remoteBookState = MutableLiveData<Resource<List<Book>>>()
     val remoteBookState = _remoteBookState
 
-    init {
+    val books = bookRepository.getAllBooks().asLiveData()
+
+    init{
         viewModelScope.launch(Dispatchers.IO) {
-           bookRepository.getAllBooksFromApi()
+            bookRepository.getAllBooksFromApi()
                 .onStart { _remoteBookState.postValue(Resource.Loading) }
                 .catch { exception -> _remoteBookState.postValue(
                     Resource.Error(exception.message ?: "network error")
@@ -32,13 +34,4 @@ class HomeViewModel(
                 }
         }
     }
-
-    val books = bookRepository.getAllBooks().asLiveData()
-}
-
-
-sealed class Resource<out T> {
-    object Loading : Resource<Nothing>()
-    class Success<T>(val data: T) : Resource<T>()
-    class Error<T>(val message: String) : Resource<T>()
 }

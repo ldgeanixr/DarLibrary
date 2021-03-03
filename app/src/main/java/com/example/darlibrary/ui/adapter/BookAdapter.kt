@@ -3,15 +3,55 @@ package com.example.darlibrary.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.darlibrary.R
 import com.example.darlibrary.data.db.Book
-import kotlinx.android.synthetic.main.book_item.view.bookId
-import kotlinx.android.synthetic.main.book_item.view.bookName
+import kotlinx.android.synthetic.main.book_item.view.bookAuthor
+import kotlinx.android.synthetic.main.book_item.view.bookTitle
 
-class BookAdapter : ListAdapter<Book, BookAdapter.BookViewHolder>(diffUtil) {
+class BookAdapter : ListAdapter<Book, BookAdapter.BookViewHolder>(diffUtil), Filterable {
+
+    private var originalList: List<Book> = ArrayList()
+
+    fun setOriginalList(newList: List<Book>){
+        originalList = newList
+        submitList(originalList)
+    }
+
+    private val bookFilter = object: Filter(){
+        override fun performFiltering(constraint: CharSequence?): FilterResults {
+
+            val filteredList = ArrayList<Book>()
+
+            if (constraint == null || constraint.isEmpty()){
+                filteredList.addAll(originalList)
+            }else{
+                val filterPattern = constraint.toString().toLowerCase().trim()
+
+                for (book in originalList){
+                    if (book.title.toLowerCase().contains(filterPattern)){
+                        filteredList.add(book)
+                    }
+                }
+            }
+
+            return FilterResults().apply {
+                values = filteredList
+            }
+        }
+
+        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+            if (results?.values != null){
+                val newList = results?.values as List<Book>
+                submitList(newList)
+            }
+        }
+
+    }
 
     class BookViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
@@ -35,7 +75,11 @@ class BookAdapter : ListAdapter<Book, BookAdapter.BookViewHolder>(diffUtil) {
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
         val item = getItem(position)
-        holder.itemView.bookId.text = item.id.toString()
-        holder.itemView.bookName.text = item.name
+        holder.itemView.bookTitle.text = item.title
+        holder.itemView.bookAuthor.text = item.author
+    }
+
+    override fun getFilter(): Filter {
+        return bookFilter
     }
 }

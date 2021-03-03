@@ -15,10 +15,10 @@ interface BookDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addBook(bookItem: Book)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addBooks(books: List<Book>)
 
     @Query("DELETE from book_table")
-    fun deleteAllBooks()
+    suspend fun deleteAllBooks()
 
 }

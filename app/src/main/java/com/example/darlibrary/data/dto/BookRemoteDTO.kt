@@ -3,7 +3,7 @@ package com.example.darlibrary.data.dto
 data class BookRemoteDTO(
     val author: String,
     val createdAt: String,
-    val genre_id: Any,
+    val genre_id: Int,
     val id: Int,
     val isbn: String,
     val publish_date: String,

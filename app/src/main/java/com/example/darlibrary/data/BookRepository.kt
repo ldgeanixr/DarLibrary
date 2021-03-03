@@ -4,7 +4,11 @@ import com.example.darlibrary.api.BookApi
 import com.example.darlibrary.data.db.Book
 import com.example.darlibrary.data.db.BookDao
 import com.example.darlibrary.data.dto.toDomainModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 class BookRepository(
     private val bookDao: BookDao,
@@ -15,9 +19,11 @@ class BookRepository(
         return bookDao.getAllBooks()
     }
 
-    suspend fun getAllBooksFromApi(): List<Book> {
-        return bookApi.getAllBooks().map{
-            it.toDomainModel()
+    suspend fun getAllBooksFromApi(): Flow<List<Book>> {
+        return flow {
+            val remoteBooks = bookApi.getAllBooks()
+                .map { books -> books.toDomainModel() }
+            emit(remoteBooks)
         }
     }
 
@@ -25,10 +31,4 @@ class BookRepository(
         bookDao.addBooks(books)
     }
 
-    suspend fun generateBooksWithCount(count: Int = 10) {
-        for (i in 1..count){
-            val book = Book(name = "Book #$i", imageUrl = "Url #$i")
-            bookDao.addBook(book)
-        }
-    }
 }

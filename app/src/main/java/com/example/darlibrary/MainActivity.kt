@@ -2,6 +2,8 @@ package com.example.darlibrary
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.widget.SearchView
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -22,4 +24,5 @@ class MainActivity : AppCompatActivity() {
 
         bottomNav.setupWithNavController(navController)
     }
+
 }

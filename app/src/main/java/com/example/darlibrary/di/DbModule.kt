@@ -14,6 +14,7 @@ val dbModule = module {
 
     single {
         Room.databaseBuilder(androidApplication(), BookRoomDatabase::class.java, "book-database")
+            .fallbackToDestructiveMigration()
             .build()
     }
 
