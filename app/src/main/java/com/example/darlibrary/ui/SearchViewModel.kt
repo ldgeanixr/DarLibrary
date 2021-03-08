@@ -1,11 +1,13 @@
 package com.example.darlibrary.ui
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.darlibrary.data.BookRepository
 import com.example.darlibrary.data.db.Book
+import com.example.darlibrary.data.db.Genre
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -17,7 +19,9 @@ class SearchViewModel(
 ) : ViewModel() {
 
     private val _remoteBookState = MutableLiveData<Resource<List<Book>>>()
-    val remoteBookState = _remoteBookState
+    val remoteBookState: LiveData<Resource<List<Book>>> = _remoteBookState
+
+    val remoteGenreState = MutableLiveData<List<Genre>>()
 
     val books = bookRepository.getAllBooks().asLiveData()
 
@@ -30,8 +34,14 @@ class SearchViewModel(
                 ) }
                 .collect { remoteBooks ->
                     _remoteBookState.postValue(Resource.Success(remoteBooks))
-                    bookRepository.addBooks(remoteBooks)
                 }
+        }
+    }
+
+    fun getGenres() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val genres = bookRepository.getGenresFromApi()
+            remoteGenreState.postValue(genres)
         }
     }
 }

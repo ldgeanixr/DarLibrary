@@ -3,6 +3,7 @@ package com.example.darlibrary.data
 import com.example.darlibrary.api.BookApi
 import com.example.darlibrary.data.db.Book
 import com.example.darlibrary.data.db.BookDao
+import com.example.darlibrary.data.db.Genre
 import com.example.darlibrary.data.dto.toDomainModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -24,7 +25,13 @@ class BookRepository(
             val remoteBooks = bookApi.getAllBooks()
                 .map { books -> books.toDomainModel() }
             emit(remoteBooks)
+            addBooks(remoteBooks)
         }
+    }
+
+    suspend fun getGenresFromApi() : List<Genre>{
+        return bookApi.getAllGenres()
+            .map{ genres -> genres.toDomainModel() }
     }
 
     suspend fun addBooks(books: List<Book>){

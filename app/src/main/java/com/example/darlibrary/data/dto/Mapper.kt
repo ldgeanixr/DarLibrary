@@ -1,6 +1,7 @@
 package com.example.darlibrary.data.dto
 
 import com.example.darlibrary.data.db.Book
+import com.example.darlibrary.data.db.Genre
 
 fun BookRemoteDTO.toDomainModel(): Book {
     return Book(
@@ -12,5 +13,16 @@ fun BookRemoteDTO.toDomainModel(): Book {
         publishDate = publish_date,
         title = title,
         updatedAt = updatedAt
+    )
+}
+
+fun GenreRemoteDTO.toDomainModel(): Genre {
+    return Genre(
+        id = id,
+        title = title,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        enabled = enabled,
+        sort = sort
     )
 }

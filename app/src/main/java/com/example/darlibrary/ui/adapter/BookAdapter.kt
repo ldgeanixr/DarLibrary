@@ -22,6 +22,17 @@ class BookAdapter : ListAdapter<Book, BookAdapter.BookViewHolder>(diffUtil), Fil
         submitList(originalList)
     }
 
+    fun filterByGenre(genreId: Int){
+        if (genreId == 0){
+            submitList(originalList)
+        }else{
+            var filteredList = originalList.filter {
+                it.genreId == genreId
+            }
+            submitList(filteredList)
+        }
+    }
+
     private val bookFilter = object: Filter(){
         override fun performFiltering(constraint: CharSequence?): FilterResults {
 
